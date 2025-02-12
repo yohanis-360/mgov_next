@@ -27,6 +27,12 @@ export default function Home() {
   const [selectedPlatform, setSelectedPlatform] = useState<string>("android");
   const [username, setUsername] = useState<string | null>("");
   const router = useRouter();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const images = [
+    "/banner_top.png", 
+    "/banner_bot_1.png", 
+    "/banner_bot_2.png", 
+  ];
   const handleSearchClick = async () => {
     setShowSearch(!showSearch); // Toggle the search bar visibility
 
@@ -60,6 +66,16 @@ export default function Home() {
         console.error("Error fetching apps:", error);
       }
     }
+  };
+   const nextImage = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  // Navigate to the previous image
+  const prevImage = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
   };
 
   const logoutclick = () => {
@@ -252,6 +268,62 @@ export default function Home() {
           </button>
         </div>
       </header>
+      <section className="w-full bg-white py-4 px-10">
+      {/* Top Full-Width Image */}
+      <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+        {/* Current Image */}
+        <Image
+          src={images[currentIndex]} // Dynamic image source
+          alt={`Carousel Image ${currentIndex + 1}`}
+          layout="fill"
+          objectFit="cover"
+          priority
+        />
+
+        {/* Arrows for Navigation */}
+        <div className="absolute inset-y-0 flex justify-between items-center w-full px-6">
+          {/* Left Arrow */}
+          <button
+            onClick={prevImage}
+            className="w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:bg-black-400"
+          >
+            &#x3c; {/* Left Arrow */}
+          </button>
+          <button
+            onClick={nextImage}
+            className="w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:bg-gray-400"
+          >
+            &#x3e; {/* Right Arrow */}
+          </button>
+        </div>
+      </div>
+
+      {/* Bottom Full-Width Images */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-4">
+        {/* Left Full-Width Image */}
+        <div className="relative w-full h-[40vh] md:h-[50vh]">
+          <Image
+            src="/banner_bot_1.png" // Replace with the left image path
+            alt="Left Image"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
+
+        {/* Right Full-Width Image */}
+        <div className="relative w-full h-[40vh] md:h-[50vh]">
+          <Image
+            src="/banner_bot_2.png" // Replace with the right image path
+            alt="Right Image"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
+      </div>
+ 
+    </section>
+
+
       <div className="mx-10">
         {activeTab === "Mobile Apps" && (
           <>
@@ -367,6 +439,11 @@ export default function Home() {
                               height={48}
                               className="rounded-md"
                             />
+                            <img
+                            src={`http://127.0.0.1:8000${app.app_icon}`}
+                            alt={app.app_name}
+                            className="w-16 h-16 rounded-[10px] shadow-lg"
+                          />
                           </div>
                           <div>
                             <h2
@@ -693,9 +770,18 @@ export default function Home() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="/landing_page_user/about_us"             
+                    className="hover:underline">
                     Contact Us
                   </a>
+                </li>
+                <li>
+                  <a
+                    href="/landing_page_user/faq"             
+                    className="hover:underline">
+                        FAQ
+                    </a>
                 </li>
               </ul>
             </div>

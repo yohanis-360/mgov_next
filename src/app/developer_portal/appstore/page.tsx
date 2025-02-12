@@ -105,6 +105,11 @@ export default function AppSubmissionOverview() {
   useEffect(() => {
     const accessToken = localStorage.getItem("access_token");
     const userData = localStorage.getItem("user");
+    const data = localStorage.getItem("data");
+    const parsedData = data ? JSON.parse(data) : null;
+
+    console.log("DATA", parsedData?.developer_info);
+
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setusername(parsedUser.username);
@@ -243,17 +248,17 @@ export default function AppSubmissionOverview() {
   };
 
   const handleAppClick = async (id: number) => {
-    try {
-      await fetch("http://127.0.0.1:8000/apps/increment-view-count/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ appId: id }),
-      });
-    } catch (error) {
-      console.error("Error updating view count:", error);
-    }
+    // try {
+    //   await fetch("http://127.0.0.1:8000/apps/increment-view-count/", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ appId: id }),
+    //   });
+    // } catch (error) {
+    //   console.error("Error updating view count:", error);
+    // }
     console.log(id);
     router.push(`/developer_portal/app-detail?id=${id}`);
   };
@@ -487,7 +492,153 @@ export default function AppSubmissionOverview() {
       </div>
     </>
   );
+  const AccountDetails = () => {
+    // Get the data from localStorage and parse it
+    const data = localStorage.getItem("data");
+    const parsedData = data ? JSON.parse(data) : null;
+    const developerInfo = parsedData.developer_info;
 
+    return (
+      <>
+        {/* Stats Summary */}
+        <div className="bg-white px-10 py-10">
+          <h2 className="text-lg font-semibold border-b pb-2 mb-4 text-black">
+            Account And Organization Details
+          </h2>
+          <div className="grid grid-cols-1 gap-6">
+            <div>
+              {/* Account Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2 text-black"
+                    defaultValue={
+                      developerInfo.user.first_name +
+                      " " +
+                      developerInfo.user.last_name
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    className="w-full border rounded-md p-2 text-black"
+                    defaultValue={developerInfo.user.email}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2 text-black"
+                    defaultValue={developerInfo.user.mobile_number}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              {/* Organization Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Organization Name
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.organization_name}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Organization Address
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.organization_address}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Organization Website
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.organization_website}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Region
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.sub_city}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Zone
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.zone}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.city}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Sub City
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.sub_city}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-black">
+                    Woreda
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border rounded-md p-2"
+                    defaultValue={developerInfo.woreda}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <button className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            Save Changes
+          </button> */}
+        </div>
+      </>
+    );
+  };
   // Render the Submit App Form
   const renderSubmitApp = () => (
     <div className="max-w-4xl mx-auto pl-6">
@@ -1021,17 +1172,36 @@ export default function AppSubmissionOverview() {
         </div>
         <ul className="space-y-3">
           <li>
-            <a href="#" className="block py-2 px-5 text-blue-600 font-medium">
+            <a
+              href="#"
+              onClick={() => setCurrentView("overview")}
+              className={`block py-2 px-5 ${
+                currentView === "overview" ? "text-blue-600" : "text-gray-600"
+              } font-medium`}
+            >
               Overview
             </a>
           </li>
           <li>
-            <a href="#" className="block py-2 px-5 text-gray-600">
+            <a
+              onClick={() => setCurrentView("Account Details")}
+              href="#"
+              className={`block py-2 px-5 ${
+                currentView === "Account Details"
+                  ? "text-blue-600"
+                  : "text-gray-600"
+              }`}
+            >
               Account Details
             </a>
           </li>
           <li>
-            <a href="#" className="block py-2 px-5 text-gray-600">
+            <a
+              href="#"
+              className={`block py-2 px-5 ${
+                currentView === "Settings" ? "text-blue-600" : "text-gray-600"
+              }`}
+            >
               Settings
             </a>
           </li>
@@ -1055,7 +1225,11 @@ export default function AppSubmissionOverview() {
 
         {/* Page Content */}
         <main className="flex-1 px-6 py-6">
-          {currentView === "overview" ? renderOverview() : renderSubmitApp()}
+          {currentView === "overview"
+            ? renderOverview()
+            : currentView === "Account Details"
+            ? AccountDetails()
+            : renderSubmitApp()}
         </main>
       </div>
     </div>

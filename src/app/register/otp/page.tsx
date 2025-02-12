@@ -63,6 +63,8 @@ function EmailVerification() {
   return (
     <div className="min-h-screen flex bg-white">
       <div className="flex-1 min-h-full bg-customblue pt-20">
+      <p className="text-lg mr-40 mt-5 ml-10">Government App Store
+      Developer Account Registration</p> 
         <img src="/logo.png" alt="Logo" />
       </div>
       <div className="sm:w-1/2 mt-2 pb-20 pl-20 pr-20 pt-40 rounded-tr-[40px] rounded-br-[40px] bg-white shadow-md flex flex-col items-center">

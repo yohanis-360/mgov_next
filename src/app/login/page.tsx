@@ -13,9 +13,19 @@ export default function Login() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [selection, setSelection] = useState('developer');
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible); // Toggle visibility state
+  };
+  const handleSelectionChange = (e: { target: { value: any; }; }) => {
+    const value = e.target.value;
+    setSelection(value);
+
+    // Navigate only when 'user' is selected
+    if (value === 'user') {
+      router.push('/user/login');
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -57,6 +67,7 @@ export default function Login() {
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("data", JSON.stringify(data));
 
         // Redirect to the App Submission Overview page
         router.push("/developer_portal");
@@ -73,9 +84,30 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex bg-white">
-      <div className="flex-1 bg-customblue pt-20 fixed top-0 left-0 w-1/2 h-full">
-        <img src="/logo.png" alt="Logo" />
-      </div>
+  <div className="flex-1 bg-customblue pt-5 fixed top-0 left-0 w-1/2 h-full">
+  <div className="text-center text-white mt-6 flex items-center justify-center">
+    <p className="text-lg mr-40">To Get Started, Choose An 
+    Account Type:</p>
+    <select 
+      value={selection}
+      onChange={handleSelectionChange}
+      className="bg-white text-black p-2 rounded">
+          <option value="developer">Developer</option>
+      <option value="user">User</option>
+    </select>
+  </div>
+  <div className="mt-12 text-center text-white">
+    <h2 className="text-xl md:text-2xl font-bold">
+      WELCOME TO GOVERNMENT APP STORE
+    </h2>
+    <p className="mt-4 mb-10 text-lg">
+      your gateway to official services and solutions!
+    </p>
+  </div>
+  
+  <img src="/logo.png" alt="Logo" className="mx-10" />
+</div>
+
       <div className="sm:w-1/2 ml-auto pb-20 pl-20 pr-20 pt-20 bg-white shadow-md flex flex-col items-center overflow-y-auto h-screen">
         <div className="mb-6 w-full">
           <div className="absolute top-5 right-5 flex items-center space-x-2">

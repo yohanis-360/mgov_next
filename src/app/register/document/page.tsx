@@ -90,9 +90,11 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex bg-white">
       <div
-        className="flex-1 min-h-full bg-customblue pt-20"
+        className="flex-1 min-h-full bg-customblue pt-10"
         // style={{ backgroundColor: "customblue" }}
       >
+         <p className="text-lg mr-40 mt-5 ml-10">Government App Store
+         Developer Account Registration</p> 
         <img src="/logo.png" alt="Logo" />
       </div>
 

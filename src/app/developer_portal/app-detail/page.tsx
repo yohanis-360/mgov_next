@@ -34,6 +34,7 @@ export default function AppDetails() {
   const [user, setUser] = useState(null);
   const [apps, setApps] = useState<App[]>([]); // Correct type for the apps state
   const [appName, setAppName] = useState("");
+  const [status, setstatus] = useState("");
   const [appVersion, setAppVersion] = useState("");
   const [category, setCategory] = useState("");
   const [ioSurl, setIosurl] = useState("");
@@ -47,6 +48,7 @@ export default function AppDetails() {
   const [errorMessage, setErrorMessage] = useState("");
   const [userName, setusername] = useState("");
   const [webPortalUrl, setWebPortalUrl] = useState("");
+  const backendUrl = process.env.BACKEND_URL;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,13 +58,10 @@ export default function AppDetails() {
     newScreenshots[index] = file; // Update the specific index with the new file
     setScreenshots(newScreenshots); // Update the state
   };
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
       setApkFile(file);
@@ -116,8 +115,8 @@ export default function AppDetails() {
     }
   };
 
-  const logoutclick = () => {
-    router.push("/login");
+  const developer_page = () => {
+    router.push("/developer_portal");
   };
   const handleSubmit = async () => {};
 
@@ -142,6 +141,39 @@ export default function AppDetails() {
     created_at: string;
     tags: string;
   }
+const [isPublished, setIsPublished] = useState(false);
+  
+
+  const handleToggle = async () => {
+    const newStatus = isPublished ? "Unpublished" : "Approved";
+    setstatus(newStatus);
+    setIsPublished(!isPublished);
+    
+    try {
+      const accessToken = localStorage.getItem("access_token");
+      const res = await fetch(`http://127.0.0.1:8000/apps/update/${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (res.ok) {
+        router.back(); setTimeout(() => { router.refresh(); }, 500);
+            } else {
+        const errorResponse = await res.json();
+        console.error(errorResponse);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    // setIsPublished((prev) => !prev);
+    // console.log(isPublished);
+    // console.log(isPublished);
+
+  };
 
   const [activeTab, setActiveTab] = useState("Mobile Apps");
   const [appDetails, setAppDetails] = useState<any>(null); // State to store app details
@@ -160,6 +192,39 @@ export default function AppDetails() {
     }
   }, []); // Run once after the component mounts on the client side
 
+  // components/UpdateAppStatus.js
+
+  const handleUpdate = async () => {
+    console.log("Updating before app status...",isPublished);
+    const updatedStatus = isPublished ? 'Approved' : 'Unpublished';
+    console.log("Updating after app status...",updatedStatus);
+
+
+    try {
+      const accessToken = localStorage.getItem("access_token");
+      const res = await fetch(`http://127.0.0.1:8000/apps/update/${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ status: updatedStatus }),
+      });
+
+      if (res.ok) {
+        router.back(); setTimeout(() => { router.refresh(); }, 500);
+            } else {
+        const errorResponse = await res.json();
+        console.error(errorResponse);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+   
+  
+
   useEffect(() => {
     console.log(id);
     if (id) {
@@ -174,12 +239,14 @@ export default function AppDetails() {
           console.log(data);
           setAppDetails(data);
           setAppName(data.app_name || "");
+          setstatus(data.status || "");
+          const fetchedStatus = data.status || "";
+          setIsPublished(fetchedStatus === "Approved");
           setAppVersion(data.app_version || "");
           setCategory(data.category || "");
           setAndroidChecked(data.supported_platforms.includes("Android"));
           setIsIOSChecked(data.supported_platforms.includes("IOS"));
           setIosurl(data.ios_url || "");
-          
         } catch (error) {
           console.error("Error fetching app details:", error);
         }
@@ -249,6 +316,7 @@ export default function AppDetails() {
                   </label>
                   <input
                     type="text"
+                    readOnly
                     value={appName}
                     onChange={(e) => setAppName(e.target.value)}
                     placeholder="Enter app name"
@@ -261,6 +329,7 @@ export default function AppDetails() {
                   </label>
                   <input
                     type="text"
+                    readOnly
                     value={appVersion}
                     onChange={(e) => setAppVersion(e.target.value)}
                     placeholder="Enter app version"
@@ -273,7 +342,9 @@ export default function AppDetails() {
                     Category
                   </label>
                   <select
+                  
                     value={category}
+                    
                     onChange={(e) => setCategory(e.target.value)}
                     className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
                   >
@@ -283,7 +354,7 @@ export default function AppDetails() {
                     <option>Finance</option>
                   </select>
                 </div>
-
+               
                 <div className="mt-4 pt-3">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Supported Platforms
@@ -300,6 +371,7 @@ export default function AppDetails() {
                     </label>
                     <label className="flex items-center text-sm font-medium text-gray-700">
                       <input
+                        readOnly
                         type="checkbox"
                         checked={isIOSChecked}
                         className="mr-2 w-4 h-4 text-purple-500 border-gray-300 rounded focus:ring-2 focus:ring-purple-500"
@@ -315,6 +387,7 @@ export default function AppDetails() {
                     <input
                       onChange={(e) => setIosurl(e.target.value)}
                       type="text"
+                      readOnly
                       value={ioSurl}
                       placeholder="Enter iOS URL"
                       className=" text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
@@ -419,9 +492,32 @@ export default function AppDetails() {
           )}
           {activeStep === 4 && (
             <div className="mt-2">
-              <h2 className="text-2xl font-semibold text-customblue mb-4">
-                App Description
-              </h2>
+             <div className="flex items-center justify-between mb-4">
+  <h2 className="text-2xl font-semibold text-customblue">
+    App Description
+  </h2>
+  {(status === "Approved" || status === "Unpublished") && (
+  <div className="flex items-center gap-4">
+      <div
+        onClick={handleToggle}
+        className={`w-12 h-6 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition ${
+          isPublished? "bg-green-500" : "bg-red-500"
+        }`}
+      >
+        <div
+          className={`w-5 h-5 bg-white rounded-full shadow-md transform transition ${
+            isPublished ? "translate-x-6" : ""
+          }`}
+        ></div>
+      </div>
+      <span className={`text-sm font-medium ${isPublished ? "text-green-600" : "text-red-600"}`}>
+      {isPublished ? "Published" : "Unpublished"}
+      </span>
+    </div>
+  )}
+</div>
+      
+
               <form className="space-y-4 pl-10  pr-10">
                 {/* Description */}
                 <div>
@@ -431,6 +527,7 @@ export default function AppDetails() {
                   <textarea
                     // rows="4"
                     placeholder="Enter app description"
+                    readOnly
                     value={appDetails.description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="text-black  w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
@@ -438,12 +535,15 @@ export default function AppDetails() {
                 </div>
 
                 {/* Tags */}
+
+               
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Tags
                   </label>
                   <input
                     value={appDetails.tags}
+                    readOnly
                     onChange={(e) => setTags(e.target.value)}
                     type="text"
                     placeholder="Enter tags"
@@ -458,6 +558,7 @@ export default function AppDetails() {
                   </label>
                   <input
                     value={appDetails.privacy_policy_url}
+                    readOnly
                     onChange={(e) => setPrivacyPolicyUrl(e.target.value)}
                     type="url"
                     placeholder="Enter privacy policy"
@@ -472,6 +573,7 @@ export default function AppDetails() {
                     value={appDetails.web_portal}
                     onChange={(e) => setWebPortalUrl(e.target.value)}
                     type="url"
+                    readOnly
                     placeholder="Enter web portal URL"
                     className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
                   />
@@ -499,7 +601,7 @@ export default function AppDetails() {
             </button>
           ) : (
             <button
-              onClick={() => handleSubmit()} // Wrap the async function in an arrow function
+              onClick={() => handleUpdate()} // Wrap the async function in an arrow function
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
               {isLoading ? (

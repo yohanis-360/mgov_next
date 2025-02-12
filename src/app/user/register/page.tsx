@@ -158,9 +158,11 @@ export default function Register() {
   return (
     <div className="min-h-screen flex bg-white">
       <div
-        className="flex-1 min-h-full bg-customblue pt-40"
+        className="flex-1 min-h-full static bg-customblue"
         // style={{ backgroundColor: "customblue" }}
       >
+            <p className="text-lg mr-40 mt-5 ml-10 mb-40">Government App Store
+            Citizen Account Registration</p> 
         <img src="/logo.png" alt="Logo" />
       </div>
       <div className="sm:w-1/2 mt-2 pb-20 pl-20 pr-20 pt-20 rounded-tr-[40px] rounded-br-[40px] bg-white shadow-md flex flex-col items-center">

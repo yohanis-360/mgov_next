@@ -6,33 +6,33 @@ import { MdOutlineAttachEmail } from "react-icons/md";
 
 export default function HelpPage() {
   return (
-    <div>
-      <div>
-        <div className="utility-page-bg1 mb-[128px] text-white">
-          <div className="m-auto h-[360px] max-w-contentwidth select-none text-left">
-            <div className="w-1/2 pt-28">
-              <h1 className="text-[40px] font-bold text-white">Contact us</h1>
-              <p>
-                Have a question or need assistance? Connect with us, and
-                we&apos;ll ensure you get the support you&apos;re looking for.
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* Contact Section */}
-        <div className="relative -top-52 m-auto max-w-contentwidth">
-          <div className="h-[739px] w-[650px] space-y-4 rounded-xl bg-white p-16 shadow-sm">
-            <h1 className="text-5xl font-bold">
+    <div className="bg-white">
+      {/* Header Section */}
+      <section className="bg-blue-700 text-white pt-40 pb-20">
+  <div className="container mx-auto text-center">
+    <h1 className="text-4xl font-bold">Contact Us</h1>
+    <p className="mt-4 text-lg">
+      Have a question or need assistance? Connect with us, and we&apos;ll ensure you get the support you&apos;re looking for.
+    </p>
+  </div>
+</section>
+
+      {/* Contact Form Section */}
+      <div className="relative -top-52 mx-20 mt-40 max-w-contentwidth">
+        <div className="flex justify-between">
+          {/* Form */}
+          <div className="h-[739px] w-[48%] space-y-4  bg-white p-12 shadow-xl">
+            <h1 className="text-4xl font-bold text-black">
               Get in <span className="text-esxmain">Touch</span>
             </h1>
-            <p className="mt-4 text-base">
-              Send us your message, and we’ll be in touch soon
+            <p className="mt-4 text-base text-gray-500">
+              Send us your message, and we’ll be in touch soon.
             </p>
 
             <Form
               name="contact-form"
               layout="vertical"
-              className="m-auto !mt-9 max-w-lg"
+              className="m-auto mt-9"
               onFinish={(values) => console.log("Form Submitted", values)}
             >
               <Form.Item
@@ -49,10 +49,7 @@ export default function HelpPage() {
                 label="Email"
                 rules={[
                   { required: true, message: "Please enter your email" },
-                  {
-                    type: "email",
-                    message: "Please enter a valid email address",
-                  },
+                  { type: "email", message: "Please enter a valid email address" },
                 ]}
               >
                 <Input placeholder="Email" className="!rounded-md" />
@@ -79,7 +76,6 @@ export default function HelpPage() {
                   className="!rounded-md"
                 />
               </Form.Item>
-              Mik360, [1/1/2025 12:47 PM]
               <Button
                 type="primary"
                 htmlType="submit"
@@ -89,76 +85,148 @@ export default function HelpPage() {
               </Button>
             </Form>
           </div>
+
           {/* Contact Details */}
-          <div className="mt-5 flex w-[650px] justify-evenly bg-transparent">
-            <div className="flex items-center space-x-3 text-center">
-              <LiaPhoneVolumeSolid className="m-auto mb-2 text-3xl" />
-              <div className="text-left">
-                <p className="font-base font-semibold">PHONE</p>
-                <p className="text-esxmain">03 5432 1234</p>
+          <div className="w-[48%] rounded-xl bg-esxlight p-12 my-20">
+            <h2 className="text-4xl font-bold text-black">
+              <span className="text-esxmain ">Contact</span> Details
+            </h2>
+            <p className="mt-6 text-lg text-gray-700">
+              We’re here to help. Feel free to reach out to us via phone, fax, or email.
+            </p>
+            <div className="mt-8 space-y-8">
+              <div className="flex items-center">
+                <LiaPhoneVolumeSolid className="text-3xl text-esxmain mr-4 text-black" />
+                <div>
+                  <p className="font-semibold text-black">Phone</p>
+                  <p className="text-gray-600">03 5432 1234</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-3 text-center">
-              <LiaFaxSolid className="m-auto mb-2 text-3xl" />
-              <div className="text-left">
-                <p className="font-base font-semibold">FAX</p>
-                <p className="text-esxmain">03 5432 1234</p>
+              <div className="flex items-center">
+                <LiaFaxSolid className="text-3xl text-esxmain mr-4 text-black" />
+                <div>
+                  <p className="font-semibold text-black">Fax</p>
+                  <p className="text-gray-600">03 5432 1234</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-3 text-center">
-              <MdOutlineAttachEmail className="m-auto mb-2 text-3xl" />
-              <div className="text-left">
-                <p className="font-base font-semibold">EMAIL</p>
-                <p className="text-esxmain">info@marcc.com.au</p>
+              <div className="flex items-center">
+                <MdOutlineAttachEmail className="text-3xl text-esxmain mr-4 text-black" />
+                <div>
+                  <p className="font-semibold text-black">Email</p>
+                  <p className="text-gray-600">info@marcc.com.au</p>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        {/* Map Section */}
-        {/* <div className="relative -top-14 mb-28">
-          <ContactMap />
-        </div> */}
-        <div className="bg-[#F8F8F8]">
-          <div className="m-auto flex h-[490px] max-w-contentwidth justify-between pt-28">
-            <div className="w-[43%] space-y-4">
-              <h3 className="text-2xl">Contact Info</h3>
-              <p className="text-3xl font-bold">
-                We are always happy to assist you
-              </p>
-            </div>
-            <div className="">
-              <h3 className="text-xl font-medium">Email Address</h3>
-              <Divider
-                type="horizontal"
-                className="custom-divider custom-divider-utility hidden sm:block"
-                style={{
-                  borderWidth: "2px",
-                  borderColor: "#000",
-                }}
-              />
-              <h4 className="text-lg font-medium">help@info.com</h4>
-              <p className="mt-8">
-                Assistance hours: <br /> Monday - Friday 6 am to 8 pm EST
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-medium">Number</h3>
-              <Divider
-                type="horizontal"
-                className="custom-divider custom-divider-utility hidden sm:block"
-                style={{
-                  borderWidth: "2px",
-                  borderColor: "#000",
-                }}
-              />
-              <h4 className="text-lg font-medium">+25167685657</h4>
-              <p className="mt-8">
-                Assistance hours: <br /> Monday - Friday 6 am to 8 pm EST
-              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <footer className="bg-gray-100 py-5 px-10 ">
+        <div className="flex flex-wrap justify-between items-center mb-6">
+          {/* Logo Section */}
+          <div className="flex flex-col items-start">
+            {/* <img
+                src="/logo_efdri.png"
+                width={30}
+                height={40}
+                alt="Logo"
+                className="h-12 mb-2"
+              /> */}
+
+            <p style={{ fontSize: "12px", color: "black" }}>
+              Copyright © {new Date().getFullYear()} App Store. All rights
+              reserved.
+            </p>
+            <div className="flex justify-center space-x-4 mt-2 text-black">
+              <a
+                style={{ fontSize: "12px" }}
+                href="#"
+                className="hover:text-blue-600"
+              >
+                Facebook
+              </a>
+              <a
+                style={{ fontSize: "12px" }}
+                href="#"
+                className="hover:text-blue-600"
+              >
+                Twitter
+              </a>
+              <a
+                style={{ fontSize: "12px" }}
+                href="#"
+                className="hover:text-blue-600"
+              >
+                LinkedIn
+              </a>
+            </div>
+          </div>
+
+          {/* Links Section */}
+          <div className="grid grid-cols-3 gap-8 text-sm text-black">
+            {/* Column 1 */}
+            <div>
+              <h4 className="font-bold mb-2">Developers</h4>
+              <ul>
+                <li>
+                  <a href="/login" className="hover:underline">
+                    Developer Console
+                  </a>
+                </li>
+                <li>
+                  <a href="/login" className="hover:underline">
+                    Submit APK
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 2 */}
+
+            {/* Column 3 */}
+            <div className="ml-20">
+              <h4 className="font-bold mb-2 ">Company</h4>
+              <ul>
+                <li>
+                  <a
+                    href="/landing_page_user/contact_us"
+                    className="hover:underline"
+                  >
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/landing_page_user/about_us"             
+                    className="hover:underline">
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/landing_page_user/faq"             
+                    className="hover:underline">
+                        FAQ
+                    </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="border-t border-gray-700 pt-4  text-black">
+          <p style={{ fontSize: "12px" }}>
+            Copyright © {new Date().getFullYear()} Gov App Ethiopia All rights
+            reserved. | Privacy Policy | Copyright Policy | Terms | 
+          </p>
+        </div>
+      </footer>
+
+
+      {/* Footer Section */}
+      
+     
+     
+      </div>
   );
 }
