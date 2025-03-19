@@ -100,18 +100,36 @@ export default function Register() {
   return (
     <div className="min-h-screen flex bg-white">
       <div
-        className="flex-1 min-h-full bg-customblue pt-40"
+        className="flex-1 min-h-full bg-customblue pt-10"
         // style={{ backgroundColor: "customblue" }}
       >
+         <div className="mt-10 text-center text-white">
+    <h2 className="text-xl md:text-2xl font-bold mb-10">
+      Government App Store Developer Registration
+    </h2>
+    {/* <p className="mt-4 mb-10 text-lg">
+      your gateway to official services and solutions!
+    </p> */}
+  </div>
         <img src="/logo.png" alt="Logo" />
+
+        {/* Back navigation */}
+       
       </div>
       <div className="sm:w-1/2 mt-2 pb-20 pl-20 pr-20 pt-20 rounded-tr-[40px] rounded-br-[40px] bg-white shadow-md flex flex-col items-center">
         <div className="mb-6 w-full">
-          <div className="absolute top-5 right-5 flex items-center space-x-2">
+        <div className="absolute top-5 right-5  flex items-center space-x-40">
+            {/* Back button */}
+            <div className=" mr-80 flex items-center cursor-pointer" onClick={() => router.back()}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-customblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span className="text-customblue ml-2">Back</span>
+            </div>
             <img src="/mint.png" alt="Logo" className="w-15 h-10" />
-            <span className="text-sm font-medium text-customblue">
+            {/* <span className="text-sm font-medium text-customblue">
               Government App Store
-            </span>
+            </span> */}
           </div>
           <label className="text-2xl font-bold text-customblue pb-10">
             Sign up

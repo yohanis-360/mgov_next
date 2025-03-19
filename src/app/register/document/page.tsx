@@ -93,17 +93,26 @@ export default function RegisterPage() {
         className="flex-1 min-h-full bg-customblue pt-10"
         // style={{ backgroundColor: "customblue" }}
       >
-         <p className="text-lg mr-40 mt-5 ml-10">Government App Store
-         Developer Account Registration</p> 
+         <p className="text-lg mr-40 mt-5 ml-10">{/* Government App Store */}</p> 
         <img src="/logo.png" alt="Logo" />
+        
+        {/* Back navigation */}
+       
       </div>
 
       <div className="sm:w-1/2 mt-2 pb-20 pl-20 pr-20 pt-20 rounded-tr-[40px] rounded-br-[40px] bg-white shadow-md flex flex-col items-center">
-        <div className="absolute top-5 right-5 flex items-center space-x-2">
-          <img src="/mint.png" alt="Logo" className="w-15 h-10" />
-          <span className="text-sm font-medium text-customblue">
-            Government App Store
-          </span>
+      <div className="absolute top-5 right-5  flex items-center space-x-40">
+            {/* Back button */}
+            <div className=" mr-80 flex items-center cursor-pointer" onClick={() => router.back()}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-customblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span className="text-customblue ml-2">Back</span>
+            </div>
+            <img src="/mint.png" alt="Logo" className="w-15 h-10" />
+            {/* <span className="text-sm font-medium text-customblue">
+              Government App Store
+            </span> */}
         </div>
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="mb-6">
@@ -162,7 +171,7 @@ export default function RegisterPage() {
                 // loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {"Submit..."}
+              {"Submit"}
             </button>
             <button
               type="button"

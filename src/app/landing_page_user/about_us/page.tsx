@@ -198,15 +198,16 @@ export default function AboutUs() {
                     href="/landing_page_user/contact_us"
                     className="hover:underline"
                   >
-                    About Us
+                  Contact Us
+
                   </a>
                 </li>
                 <li>
                   <a
                     href="/landing_page_user/about_us"             
                     className="hover:underline">
-                    Contact Us
-                  </a>
+                    About Us
+                    </a>
                 </li>
               </ul>
             </div>

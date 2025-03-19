@@ -85,7 +85,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex bg-white">
   <div className="flex-1 bg-customblue pt-5 fixed top-0 left-0 w-1/2 h-full">
-  <div className="text-center text-white mt-6 flex items-center justify-center">
+  {/* <div className="text-center text-white mt-6 flex items-center justify-center">
     <p className="text-lg mr-40">To Get Started, Choose An 
     Account Type:</p>
     <select 
@@ -95,7 +95,7 @@ export default function Login() {
           <option value="developer">Developer</option>
       <option value="user">User</option>
     </select>
-  </div>
+  </div> */}
   <div className="mt-12 text-center text-white">
     <h2 className="text-xl md:text-2xl font-bold">
       WELCOME TO GOVERNMENT APP STORE
@@ -106,22 +106,31 @@ export default function Login() {
   </div>
   
   <img src="/logo.png" alt="Logo" className="mx-10" />
+  
+  {/* Back navigation */}
 </div>
 
       <div className="sm:w-1/2 ml-auto pb-20 pl-20 pr-20 pt-20 bg-white shadow-md flex flex-col items-center overflow-y-auto h-screen">
         <div className="mb-6 w-full">
-          <div className="absolute top-5 right-5 flex items-center space-x-2">
+        <div className="absolute top-5 right-5  flex items-center space-x-40">
+            {/* Back button */}
+            <div className=" mr-80 flex items-center cursor-pointer" onClick={() => router.back()}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-customblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span className="text-customblue ml-2">Back</span>
+            </div>
             <img src="/mint.png" alt="Logo" className="w-15 h-10" />
-            <span className="text-sm font-medium text-customblue">
+            {/* <span className="text-sm font-medium text-customblue">
               Government App Store
-            </span>
+            </span> */}
           </div>
-          <label className="text-2xl font-bold text-customblue pb-10">
-            Sign In
+          <label className="text-2xl font-bold text-black pb-4">
+Developer Login
           </label>
-          <span className="block text-sm text-[#989090] pt-3">
-            Sign in to access your account
-          </span>
+          <span className="block text-sm text-[#989090] pt-2">
+          Please login to continue to your account.
+                    </span>
         </div>
 
         <form onSubmit={handleLogin} className="w-full">
@@ -235,12 +244,12 @@ export default function Login() {
             Create one
           </a>
         </p>
-        <p className="mt-4 text-center text-sm text-gray-600">
+        {/* <p className="mt-4 text-center text-sm text-gray-600">
           Login As User?{" "}
           <a href="/user/login" className="text-indigo-600 hover:underline">
             Create one
           </a>
-        </p>
+        </p> */}
       </div>
 
       {/* Image Section */}

@@ -188,7 +188,8 @@ export default function HelpPage() {
               <ul>
                 <li>
                   <a
-                    href="/landing_page_user/contact_us"
+                                      href="/landing_page_user/about_us"             
+
                     className="hover:underline"
                   >
                     About Us
@@ -196,7 +197,7 @@ export default function HelpPage() {
                 </li>
                 <li>
                   <a
-                    href="/landing_page_user/about_us"             
+                                      href="/landing_page_user/contact_us"
                     className="hover:underline">
                     Contact Us
                   </a>

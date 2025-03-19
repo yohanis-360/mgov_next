@@ -721,8 +721,15 @@ export default function AppSubmissionOverview() {
                 >
                   <option value="">Select category</option>
                   <option>Education</option>
-                  <option>Health</option>
-                  <option>Finance</option>
+<option>Finance</option>
+<option>Health</option>
+<option>Agriculture</option>
+<option>Trade</option>
+<option>Technology</option>
+<option>Social Affairs</option>
+<option>Justice</option>
+<option>Logistics</option>
+
                 </select>
               </div>
 
@@ -748,20 +755,20 @@ export default function AppSubmissionOverview() {
                     iOS
                   </label>
                 </div>
-                {/* {isIOSChecked && ( */}
-                <div className="mt-4 pl-0 pt-3">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    iOS URL(Optional)
-                  </label>
-                  <input
-                    onChange={(e) => setIosurl(e.target.value)}
-                    type="text"
-                    value={ioSurl}
-                    placeholder="Enter iOS URL"
-                    className=" text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
-                  />
-                </div>
-                {/* )} */}
+                {isIOSChecked && (
+                  <div className="mt-4 pl-0 pt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      iOS URL(Optional)
+                    </label>
+                    <input
+                      onChange={(e) => setIosurl(e.target.value)}
+                      type="text"
+                      value={ioSurl}
+                      placeholder="Enter iOS URL"
+                      className=" text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    />
+                  </div>
+                )}
               </div>
             </form>
           </div>
@@ -872,7 +879,7 @@ export default function AppSubmissionOverview() {
               {apkFile && (
                 <div className="mt-4">
                   <p className="text-sm font-medium text-gray-700">
-                    Uploaded APK:{" "}
+                    APK:{" "}
                     <a
                       href={apkUrl || "#"}
                       download={apkFile?.name}
@@ -890,7 +897,7 @@ export default function AppSubmissionOverview() {
               {apkFile && uploadPercentage > 0 && (
                 <div className="mt-4">
                   <p className="text-sm font-medium text-gray-700">
-                    Uploading... {uploadPercentage}%
+                    {uploadPercentage < 100 ? `Uploading... ${uploadPercentage}%` : 'Upload successful'}
                   </p>
                   <progress
                     value={uploadPercentage}
@@ -1120,21 +1127,21 @@ export default function AppSubmissionOverview() {
         <button
           onClick={prevStep}
           disabled={activeStep === 1}
-          className=" text-white px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 disabled:opacity-50"
+          className="text-white px-4 py-2 bg-customblue rounded-lg hover:bg-customblue disabled:opacity-50"
         >
           Previous
         </button>
         {activeStep < totalSteps ? (
           <button
             onClick={nextStep}
-            className="  px-4 py-2 bg-customblue text-white rounded-lg hover:bg-customblue disabled:opacity-50"
+            className="px-4 py-2 bg-customblue text-white rounded-lg hover:bg-customblue disabled:opacity-50"
           >
             Next
           </button>
         ) : (
           <button
             onClick={() => handleSubmit()} // Wrap the async function in an arrow function
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            className="px-4 py-2 bg-customblue text-white rounded-lg hover:bg-green-700"
           >
             {isLoading ? (
               <div className="flex justify-center items-center">

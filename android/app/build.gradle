@@ -1,0 +1,18 @@
+dependencies {
+    // ... existing dependencies ...
+    
+    // HKID Scanning SDK
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    // If you have a specific version of the SDK, use this instead:
+    // implementation(name: 'mcv-sdk', ext: 'aar')
+    
+    // ... existing dependencies ...
+}
+
+repositories {
+    // ... existing repositories ...
+    flatDir {
+        dirs 'libs'
+    }
+    // ... existing repositories ...
+} 

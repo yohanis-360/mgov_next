@@ -29,29 +29,26 @@ export default function Home() {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const images = [
-    "/banner_top.png", 
-    "/banner_bot_1.png", 
-    "/banner_bot_2.png", 
+    {
+      src: "/main_banner.png",
+      caption: "Welcome to the Ethiopian Government App Store This is our best app developed by 360ground",
+    },
+    {
+      src: "/banner_top.png",
+      caption: "Explore Our Top-Rated Applications",
+    },
+    {
+      src: "/banner_bot_1.png",
+      caption: "Simplifying Governance with Technology",
+    },
+    {
+      src: "/banner_bot_2.png",
+      caption: "Empowering Citizens Through Apps",
+    },
   ];
   const handleSearchClick = async () => {
-    setShowSearch(!showSearch); // Toggle the search bar visibility
-
     if (searchQuery.trim()) {
-      try {
-        console.log("Searching apps on the server...");
-        const response = await fetch(
-          `http://127.0.0.1:8000/apps/search/?query=${searchQuery}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Data received from backend:", data);
-          setApps(data); // Update the app list with the search results
-        } else {
-          console.error("Search failed:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error performing search:", error);
-      }
+      router.push(`/search-results?q=${encodeURIComponent(searchQuery.trim())}`);
     } else {
       console.log("Fetching all apps...");
       try {
@@ -121,6 +118,12 @@ export default function Home() {
     },
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 1000); // 3-second interval
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, []);
   const handleAppClick = async (id: number) => {
     try {
       console.log(id);
@@ -198,7 +201,18 @@ export default function Home() {
       {/* Header */}
       <header className="flex justify-between items-center px-6 py-4 bg-gray-100">
         <div className="flex items-center space-x-4">
-          <Image src="/logo_efdri.png" alt="Logo" width={30} height={30} />
+          <Image 
+            src="/efdri.svg" 
+            alt="Logo" 
+            width={40} 
+            height={30} 
+            className="object-contain h-full"
+          />
+
+          <div className="flex flex-col pr-10">
+            <h1 className="text-black" style={{fontSize: "16px", color:"#767676"}}>Government Appstore</h1>
+            <h1 className="text-black" style={{fontSize: "12px", color:"#767676"}}>The official app store of FDRE</h1>
+          </div>
 
           {/* Tabs */}
           <div className="flex justify-center ">
@@ -250,77 +264,89 @@ export default function Home() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            // onKeyDown={(e) => {
-            //   if (e.key === "Enter") {
-            //     handleSearchClick();
-            //   }
-            // }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearchClick();
+              }
+            }}
             placeholder="Search apps"
             style={{ width: "500px" }}
             className="ml-3 p-2 border border-gray-300 rounded-md text-sm text-black"
           />
-
+       
           <button
-            onClick={logoutclick}
+            onClick={username ? logoutclick : () => router.push("/user/login")}
             className="text-sm px-4 py-2 bg-blue-600 text-white rounded-[50px]"
           >
-            {username}
+            
+            {username || "Login"}
           </button>
         </div>
       </header>
+
       <section className="w-full bg-white py-4 px-10">
       {/* Top Full-Width Image */}
-      <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+      <div className="relative w-full h-[40vh] md:h-[60vh] overflow-hidden rounded-2xl">
         {/* Current Image */}
-        <Image
-          src={images[currentIndex]} // Dynamic image source
-          alt={`Carousel Image ${currentIndex + 1}`}
-          layout="fill"
-          objectFit="cover"
-          priority
-        />
+        <div className="relative w-full h-full rounded-2xl overflow-hidden">
+          <Image
+            src={images[currentIndex].src}
+            alt={`Carousel Image ${currentIndex + 1}`}
+            layout="fill"
+            objectFit="cover"
+            className="rounded-2xl"
+            priority
+          />
+        </div>
+
+        {/* Caption */}
+        <div className="absolute bottom-8 left-8 bg-black/10 text-white p-4 rounded-lg">
+          <h2 className="text-lg font-bold">{images[currentIndex].caption}</h2>
+        </div>
 
         {/* Arrows for Navigation */}
         <div className="absolute inset-y-0 flex justify-between items-center w-full px-6">
-          {/* Left Arrow */}
+          {/* Previous Button */}
           <button
             onClick={prevImage}
-            className="w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:bg-black-400"
+            className="w-12 h-12 bg-white/80 shadow-lg rounded-full flex items-center justify-center hover:bg-white transition-all duration-300"
           >
-            &#x3c; {/* Left Arrow */}
+            <svg
+              className="w-6 h-6 text-gray-800"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
           </button>
+
+          {/* Next Button */}
           <button
             onClick={nextImage}
-            className="w-12 h-12 bg-white shadow-lg rounded-full flex items-center justify-center hover:bg-gray-400"
+            className="w-12 h-12 bg-white/80 shadow-lg rounded-full flex items-center justify-center hover:bg-white transition-all duration-300"
           >
-            &#x3e; {/* Right Arrow */}
+            <svg
+              className="w-6 h-6 text-gray-800"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
           </button>
         </div>
       </div>
-
-      {/* Bottom Full-Width Images */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-4">
-        {/* Left Full-Width Image */}
-        <div className="relative w-full h-[40vh] md:h-[50vh]">
-          <Image
-            src="/banner_bot_1.png" // Replace with the left image path
-            alt="Left Image"
-            layout="fill"
-            objectFit="cover"
-          />
-        </div>
-
-        {/* Right Full-Width Image */}
-        <div className="relative w-full h-[40vh] md:h-[50vh]">
-          <Image
-            src="/banner_bot_2.png" // Replace with the right image path
-            alt="Right Image"
-            layout="fill"
-            objectFit="cover"
-          />
-        </div>
-      </div>
- 
     </section>
 
 
@@ -341,10 +367,11 @@ export default function Home() {
                 onClick={() => setSelectedPlatform("android")}
               >
                 <Image
-                  src="/platform_icon.png" // Android icon path
+                  src= {selectedPlatform === "android" ? "/android.svg" : "/android_nw.svg"}  
                   alt="Android Icon"
                   width={20}
                   height={20}
+                  className={selectedPlatform === "android" ? "brightness-0 invert" : ""}
                 />
                 <span>Android</span>
               </button>
@@ -362,10 +389,11 @@ export default function Home() {
                 onClick={() => setSelectedPlatform("IOS")}
               >
                 <Image
-                  src="/platform_icon.png" // iOS icon path
-                  alt="iOS Icon"
+                  src= {selectedPlatform === "IOS" ? "/ios_new.svg" : "/ios.svg"} 
+                  alt= "iOS Icon"
                   width={20}
                   height={20}
+                  className={selectedPlatform === "IOS" ? "brightness-0 invert" : ""}
                 />
                 <span>iOS</span>
               </button>
@@ -403,103 +431,128 @@ export default function Home() {
               ))}
             </section>
             {filteredApps.length > 0 ? (
-              <section className="px-6 py-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                  {filteredApps.map((app) => (
-                    <div
-                      onClick={() => handleAppClick(app.id)}
-                      key={app.id}
-                      className="max-w-md bg-white rounded-lg shadow-md overflow-hidden border border-gray-100"
-                    >
-                      {/* Image section */}
+              <>
+                <section className="px-6 py-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {filteredApps.slice(0, 6).map((app) => (
                       <div
-                        style={{
-                          position: "relative",
-                          width: "100%",
-                          paddingTop: "40.25%",
-                        }}
-                      >
-                        <Image
-                          src={`http://127.0.0.1:8000${app.cover_graphics}`}
-                          alt={app.app_name}
-                          layout="fill"
-                          objectFit="contain" // Use "contain" if you want the entire image visible
-                        />
-                      </div>
-
-                      {/* Content section */}
-                      <div className="p-4">
-                        {/* App Icon and Title */}
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12">
-                            <Image
-                              src={`http://127.0.0.1:8000${app.app_icon}`}
-                              alt={`${app.app_name} Icon`}
-                              width={48}
-                              height={48}
-                              className="rounded-md"
-                            />
-                            <img
-                            src={`http://127.0.0.1:8000${app.app_icon}`}
-                            alt={app.app_name}
-                            className="w-16 h-16 rounded-[10px] shadow-lg"
-                          />
-                          </div>
-                          <div>
-                            <h2
-                              className="font-semibold text-gray-800"
-                              style={{ fontSize: "15px" }}
-                            >
-                              {app.app_name}
-                            </h2>
-                            <p className="text-sm text-gray-500">
-                              {app.category} · {app.tags}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ) : (
-              <div className="flex justify-center items-center h-64 text-lg text-gray-500">
-                {/* There is no app ... */}
-              </div>
-            )}
-            {filteredApps.length > 0 ? (
-              <section>
-                <div className="mx-auto p-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {filteredApps.map((app) => (
-                      <div
+                        onClick={() => handleAppClick(app.id)}
                         key={app.id}
-                        className="rounded-lg p-4 flex flex-col"
+                        className="max-w-md bg-white rounded-lg shadow-md overflow-hidden border border-gray-100"
                       >
-                        <div className="flex items-center space-x-4">
-                          <img
-                            src={`http://127.0.0.1:8000${app.app_icon}`}
+                        {/* Image section */}
+                        <div
+                          style={{
+                            position: "relative",
+                            width: "100%",
+                            paddingTop: "40.25%",
+                          }}
+                        >
+                          <Image
+                            src={`http://127.0.0.1:8000${app.cover_graphics}`}
                             alt={app.app_name}
-                            className="w-16 h-16 rounded-[10px] shadow-lg"
+                            layout="fill"
+                            objectFit="contain"
                           />
-                          <div className="flex flex-col">
-                            <h3 className="text-black">{app.app_name}</h3>
-                            <p className="text-gray-500 text-sm">
-                              {app.category}
-                            </p>
+                        </div>
+
+                        {/* Content section */}
+                        <div className="p-4">
+                          {/* App Icon and Title */}
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12">
+                              <Image
+                                src={`http://127.0.0.1:8000${app.app_icon}`}
+                                alt={`${app.app_name} Icon`}
+                                width={48}
+                                height={48}
+                                className="rounded-md"
+                              />
+                            </div>
+                            <div>
+                              <h2
+                                className="font-semibold text-gray-800"
+                                style={{ fontSize: "15px" }}
+                              >
+                                {app.app_name}
+                              </h2>
+                              <p className="text-sm text-gray-500">
+                                {app.category} · {app.tags}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
-              </section>
+                </section>
+
+                {/* Additional apps section */}
+                {filteredApps.length > 6 && (
+                  <section className="px-6 py-8">
+                    {/* <h2 className="text-gray-800 font-bold mb-4" style={{ fontSize: "18px" }}>
+                      More Apps
+                    </h2> */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                      {filteredApps.slice(6).map((app) => (
+                        <div
+                          onClick={() => handleAppClick(app.id)}
+                          key={app.id}
+                          className="max-w-md bg-white rounded-lg shadow-md overflow-hidden border border-gray-100"
+                        >
+                          {/* Image section */}
+                          <div
+                            style={{
+                              position: "relative",
+                              width: "100%",
+                              paddingTop: "40.25%",
+                            }}
+                          >
+                            <Image
+                              src={`http://127.0.0.1:8000${app.cover_graphics}`}
+                              alt={app.app_name}
+                              layout="fill"
+                              objectFit="contain"
+                            />
+                          </div>
+
+                          {/* Content section */}
+                          <div className="p-4">
+                            {/* App Icon and Title */}
+                            <div className="flex items-center space-x-4">
+                              <div className="w-12 h-12">
+                                <Image
+                                  src={`http://127.0.0.1:8000${app.app_icon}`}
+                                  alt={`${app.app_name} Icon`}
+                                  width={48}
+                                  height={48}
+                                  className="rounded-md"
+                                />
+                              </div>
+                              <div>
+                                <h2
+                                  className="font-semibold text-gray-800"
+                                  style={{ fontSize: "15px" }}
+                                >
+                                  {app.app_name}
+                                </h2>
+                                <p className="text-sm text-gray-500">
+                                  {app.category} · {app.tags}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </>
             ) : (
               <div className="flex justify-center items-center h-64 text-lg text-gray-500">
-                There is no app ...
+                {/* There is no app ... */}
               </div>
             )}
-
             {filteredApps.length > 0 ? (
               <section className="px-6 py-8">
                 <h2
@@ -546,7 +599,7 @@ export default function Home() {
               </section>
             ) : (
               <div className="flex justify-center items-center h-64 text-lg text-gray-500">
-                {/* There is no app... */}
+                There is no app...
               </div>
             )}
           </>
@@ -708,7 +761,7 @@ export default function Home() {
               /> */}
 
             <p style={{ fontSize: "12px", color: "black" }}>
-              Copyright © {new Date().getFullYear()} App Store. All rights
+              Copyright © {new Date().getFullYear()} App Store. All rights
               reserved.
             </p>
             <div className="flex justify-center space-x-4 mt-2 text-black">
@@ -763,7 +816,7 @@ export default function Home() {
               <ul>
                 <li>
                   <a
-                    href="/landing_page_user/contact_us"
+                    href="/landing_page_user/about_us"             
                     className="hover:underline"
                   >
                     About Us
@@ -771,7 +824,7 @@ export default function Home() {
                 </li>
                 <li>
                   <a
-                    href="/landing_page_user/about_us"             
+                  href="/landing_page_user/contact_us"
                     className="hover:underline">
                     Contact Us
                   </a>
@@ -792,7 +845,7 @@ export default function Home() {
         <div className="border-t border-gray-700 pt-4  text-black">
           <p style={{ fontSize: "12px" }}>
             Copyright © {new Date().getFullYear()} Gov App Ethiopia All rights
-            reserved. | Privacy Policy | Copyright Policy | Terms | 
+            reserved. | Privacy Policy | Copyright Policy | Terms | 
           </p>
         </div>
       </footer>

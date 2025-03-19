@@ -63,17 +63,24 @@ function EmailVerification() {
   return (
     <div className="min-h-screen flex bg-white">
       <div className="flex-1 min-h-full bg-customblue pt-20">
-      <p className="text-lg mr-40 mt-5 ml-10">Government App Store
+      <p className="text-lg mr-40 mt-5 ml-10 text-white">Government App Store
       Developer Account Registration</p> 
         <img src="/logo.png" alt="Logo" />
       </div>
       <div className="sm:w-1/2 mt-2 pb-20 pl-20 pr-20 pt-40 rounded-tr-[40px] rounded-br-[40px] bg-white shadow-md flex flex-col items-center">
-        <div className="absolute top-5 right-5 flex items-center space-x-2">
-          <img src="/mint.png" alt="Logo" className="w-15 h-10" />
-          <span className="text-sm font-medium text-customblue">
-            Government App Store
-          </span>
-        </div>
+      <div className="absolute top-5 right-5  flex items-center space-x-40">
+            {/* Back button */}
+            <div className=" mr-80 flex items-center cursor-pointer" onClick={() => router.back()}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-customblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span className="text-customblue ml-2">Back</span>
+            </div>
+            <img src="/mint.png" alt="Logo" className="w-15 h-10" />
+            {/* <span className="text-sm font-medium text-customblue">
+              Government App Store
+            </span> */}
+          </div>
         <div className="mb-6 w-full text-center">
           <p className="text-lg text-customblue">
             Enter the OTP sent to {email}

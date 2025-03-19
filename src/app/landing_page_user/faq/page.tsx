@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 
 export default function FAQPage() {
   const [activeTab, setActiveTab] = useState('Platform');
@@ -33,7 +33,7 @@ export default function FAQPage() {
     },
   ];
 
-  const toggleFAQ = (index) => {
+  const toggleFAQ = (index:any) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
@@ -167,7 +167,8 @@ export default function FAQPage() {
               <ul>
                 <li>
                   <a
-                    href="/landing_page_user/contact_us"
+                                      href="/landing_page_user/about_us"             
+
                     className="hover:underline"
                   >
                     About Us
@@ -175,7 +176,7 @@ export default function FAQPage() {
                 </li>
                 <li>
                   <a
-                    href="/landing_page_user/about_us"             
+                    href="/landing_page_user/contact_us"
                     className="hover:underline">
                     Contact Us
                   </a>

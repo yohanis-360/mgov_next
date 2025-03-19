@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Key, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -16,6 +17,7 @@ export default function AppDetails() {
     typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
   const [username, setUsername] = useState<string | null>("");
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
   const [showModal, setShowModal] = React.useState(false);
   const [newReview, setNewReview] = React.useState({ content: "" });
@@ -59,6 +61,11 @@ export default function AppDetails() {
       </div>
     );
   }
+
+  
+  const logoutclick = () => {
+    router.push("/user/login");
+  };
   const submitReview = async () => {
     if (newReview.content.trim()) {
       try {
@@ -84,9 +91,10 @@ export default function AppDetails() {
         // Reset input and close modal after successful submission
         setNewReview({ content: "" });
         setShowModal(false);
-        window.location.reload();
+        
+        // Fetch updated reviews instead of refreshing the whole page
+        fetchUpdatedReviews();
 
-        // Optionally, you can refresh the review list by re-fetching app details
         console.log("Review submitted successfully.");
       } catch (error) {
         console.error("Error submitting review:", error);
@@ -95,13 +103,40 @@ export default function AppDetails() {
     }
   };
 
+  // Function to fetch only the updated reviews
+  const fetchUpdatedReviews = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/apps/listing/${id}`
+      );
+      const data = await response.json();
+      // Update only the reviews part of appDetails
+      setAppDetails((prevDetails: any) => ({
+        ...prevDetails,
+        reviews: data.reviews
+      }));
+    } catch (error) {
+      console.error("Error fetching updated reviews:", error);
+    }
+  };
+
+  // Handle review button click
+  const handleReviewButtonClick = () => {
+    if (!user) {
+      setLoginPromptOpen(true);
+    } else {
+      setShowModal(true);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-white">
       <header className="flex justify-between items-center px-6 py-4 bg-gray-100">
         <div className="flex items-center space-x-4">
-          <Image src={"/logo_efdri.png"} alt="Logo" width={40} height={40} />
-
-          <div className="flex justify-center ">
+        <Link href="/landing_page_user">
+      <Image src="/logo_efdri.png" alt="Logo" width={40} height={40} />
+    </Link>
+          {/* <div className="flex justify-center ">
             <button
               className={`px-6 py-3 text-sm font-semibold ${
                 activeTab === "Mobile Apps"
@@ -122,12 +157,15 @@ export default function AppDetails() {
             >
               Web Portal
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex items-center space-x-4">
-          <button className="text-sm px-4 py-2 bg-blue-600 text-white rounded-[50px]">
-            {username}
+        <button
+            onClick={username ? logoutclick : () => router.push("/user/login")}
+            className="text-sm px-4 py-2 bg-blue-600 text-white rounded-[50px]"
+          >
+            {username || "Login"}
           </button>
         </div>
       </header>
@@ -162,7 +200,7 @@ export default function AppDetails() {
               <p className="text-xl text-black font-semibold">
                 {appDetails.category}
               </p>
-              <p className="text-sm text-gray-500">category</p>
+              <p className="text-sm text-gray-500">Category</p>
             </div>
           </div>
           <div className="ml-auto mt-6">
@@ -177,7 +215,7 @@ export default function AppDetails() {
                   link.click();
                 }}
               >
-                Install Android
+                Download APK
               </button>
             )}
             {appDetails.supported_platforms.includes("IOS") && (
@@ -240,10 +278,13 @@ export default function AppDetails() {
             Reviews
           </h2>
           <button
-            className="px-4 py-2 bg-customblue text-white rounded hover:bg-blue-600"
-            onClick={() => setShowModal(true)}
+            onClick={handleReviewButtonClick}
+            className="flex items-center space-x-2 text-customblue  rounded-md px-4 py-2 hover:bg-blue-50 transition-colors"
           >
-            Write Review
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+            </svg>
+            <span>Write a Review</span>
           </button>
         </div>
         <div className="mt-6 space-y-4">
@@ -314,6 +355,37 @@ export default function AppDetails() {
             </div>
           </div>
         )}
+
+        {/* Login Prompt Modal */}
+        {loginPromptOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h3 className="text-lg font-bold mb-4 text-black">
+                Login Required
+              </h3>
+              <p className="text-gray-700 mb-6">
+                You need to be logged in to write a review. Would you like to login now?
+              </p>
+              <div className="flex justify-end">
+                <button
+                  className="px-4 py-2 bg-gray-300 rounded mr-2 hover:bg-gray-400"
+                  onClick={() => setLoginPromptOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 bg-customblue text-white rounded hover:bg-blue-600"
+                  onClick={() => {
+                    setLoginPromptOpen(false);
+                    router.push("/user/login");
+                  }}
+                >
+                  Login
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       <footer className="bg-gray-100 py-5 px-10 ">
@@ -329,7 +401,7 @@ export default function AppDetails() {
               /> */}
 
             <p style={{ fontSize: "12px", color: "black" }}>
-              Copyright © {new Date().getFullYear()} App Store. All rights
+              Copyright © {new Date().getFullYear()} App Store. All rights
               reserved.
             </p>
             <div className="flex justify-center space-x-4 mt-2 text-black">
@@ -383,12 +455,18 @@ export default function AppDetails() {
               <h4 className="font-bold mb-2 ">Company</h4>
               <ul>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a 
+                  
+                  href="/landing_page_user/about_us"             
+                  className="hover:underline">
                     About Us
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a
+                                      href="/landing_page_user/contact_us"
+                  // href="#"
+                   className="hover:underline">
                     Contact Us
                   </a>
                 </li>
@@ -401,7 +479,7 @@ export default function AppDetails() {
         <div className="border-t border-gray-700 pt-4  text-black">
           <p style={{ fontSize: "12px" }}>
             Copyright © {new Date().getFullYear()} Gov App Ethiopia All rights
-            reserved. | Privacy Policy | Copyright Policy | Terms | 
+            reserved. | Privacy Policy | Copyright Policy | Terms | 
           </p>
         </div>
       </footer>
