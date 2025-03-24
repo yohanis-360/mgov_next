@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +18,8 @@ export interface AppData {
   created_at: string;
 }
 
-export default function SearchResults() {
+// Create a client-side only component for the search functionality
+function SearchResultsContent() {
   const [apps, setApps] = useState<AppData[]>([]);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState<string | null>("");
@@ -61,9 +62,8 @@ export default function SearchResults() {
     fetchSearchResults();
   }, [query]);
 
-  const filteredApps = apps.filter(app => 
-    app.supported_platforms.toLowerCase().includes(selectedPlatform.toLowerCase())
-  );
+  // Show all apps without filtering by platform
+  const filteredApps = apps;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -324,5 +324,16 @@ export default function SearchResults() {
         </div>
       </footer>
     </div>
+  );
+}
+
+// Main component with suspense boundary
+export default function SearchResults() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>}>
+      <SearchResultsContent />
+    </Suspense>
   );
 } 

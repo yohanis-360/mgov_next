@@ -35,11 +35,133 @@ export default function AppSubmissionOverview() {
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // Form validation state
+  const [errors, setErrors] = useState({
+    appName: "",
+    appVersion: "",
+    category: "",
+    platforms: "",
+    iosUrl: "",
+    appIcon: "",
+    apkFile: "",
+    coverGraphics: "",
+    description: "",
+    tags: "",
+    privacyPolicyUrl: "",
+    screenshots: "",
+  });
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeStep, setActiveStep] = useState(1);
   const [isAndroidChecked, setAndroidChecked] = useState(false);
   const [isIOSChecked, setIsIOSChecked] = useState(false);
-  const nextStep = () => setActiveStep((prev) => prev + 1);
+  const nextStep = () => {
+    // Validate the current step before proceeding
+    if (validateCurrentStep()) {
+      setActiveStep((prev) => prev + 1);
+    }
+  };
+  
+  const validateCurrentStep = () => {
+    let isValid = true;
+    const newErrors = { ...errors };
+    
+    if (activeStep === 1) {
+      // Validate App Information step
+      if (!appName.trim()) {
+        newErrors.appName = "App name is required";
+        isValid = false;
+      } else {
+        newErrors.appName = "";
+      }
+      
+      if (!appVersion.trim()) {
+        newErrors.appVersion = "App version is required";
+        isValid = false;
+      } else {
+        newErrors.appVersion = "";
+      }
+      
+      if (!category) {
+        newErrors.category = "Category is required";
+        isValid = false;
+      } else {
+        newErrors.category = "";
+      }
+      
+      if (!isAndroidChecked && !isIOSChecked) {
+        newErrors.platforms = "At least one platform must be selected";
+        isValid = false;
+      } else {
+        newErrors.platforms = "";
+      }
+      
+      if (isIOSChecked && !ioSurl.trim()) {
+        newErrors.iosUrl = "iOS URL is required when iOS platform is selected";
+        isValid = false;
+      } else {
+        newErrors.iosUrl = "";
+      }
+    } else if (activeStep === 2) {
+      // Validate Upload Files step
+      if (!appIcon) {
+        newErrors.appIcon = "App icon is required";
+        isValid = false;
+      } else {
+        newErrors.appIcon = "";
+      }
+      
+      if (isAndroidChecked && !apkFile) {
+        newErrors.apkFile = "APK file is required for Android apps";
+        isValid = false;
+      } else {
+        newErrors.apkFile = "";
+      }
+      
+      if (!coverGraphics) {
+        newErrors.coverGraphics = "Cover graphics are required";
+        isValid = false;
+      } else {
+        newErrors.coverGraphics = "";
+      }
+    } else if (activeStep === 3) {
+      // Validate Screenshot step
+      // Check if at least one screenshot is uploaded
+      const hasScreenshot = screenshots.some(screenshot => screenshot !== null);
+      if (!hasScreenshot) {
+        newErrors.screenshots = "At least one screenshot is required";
+        isValid = false;
+      } else {
+        newErrors.screenshots = "";
+      }
+    } else if (activeStep === 4) {
+      // Validate App Description step
+      if (!description.trim()) {
+        newErrors.description = "Description is required";
+        isValid = false;
+      } else {
+        newErrors.description = "";
+      }
+      
+      if (!tags.trim()) {
+        newErrors.tags = "Tags are required";
+        isValid = false;
+      } else {
+        newErrors.tags = "";
+      }
+      
+      if (!privacyPolicyUrl.trim()) {
+        newErrors.privacyPolicyUrl = "Privacy Policy URL is required";
+        isValid = false;
+      } else {
+        newErrors.privacyPolicyUrl = "";
+      }
+    }
+    
+    setErrors(newErrors);
+    return isValid;
+  };
+  
   const prevStep = () => setActiveStep((prev) => prev - 1);
   const [user, setUser] = useState(null);
   const [apps, setApps] = useState<App[]>([]); // Correct type for the apps state
@@ -273,6 +395,11 @@ export default function AppSubmissionOverview() {
     router.push("/login");
   };
   const handleSubmit = async () => {
+    // Validate the final step first
+    if (!validateCurrentStep()) {
+      return; // Stop if validation fails
+    }
+    
     const formData = new FormData();
     formData.append("app_name", appName);
     formData.append("app_version", appVersion);
@@ -684,58 +811,66 @@ export default function AppSubmissionOverview() {
             <h2 className="text-xl font-bold mb-4 text-customblue">
               App Information
             </h2>
-            <form className="space-y-5 pl-10  pr-10">
+            <form className="space-y-5 pl-10 pr-10">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  App Name
+                  App Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={appName}
                   onChange={(e) => setAppName(e.target.value)}
                   placeholder="Enter app name"
-                  className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                  className={`text-black w-full px-4 py-2 border ${errors.appName ? "border-red-500" : "border-gray-300"} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150`}
                 />
+                {errors.appName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.appName}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  App Version
+                  App Version <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={appVersion}
                   onChange={(e) => setAppVersion(e.target.value)}
                   placeholder="Enter app version"
-                  className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                  className={`text-black w-full px-4 py-2 border ${errors.appVersion ? "border-red-500" : "border-gray-300"} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150`}
                 />
+                {errors.appVersion && (
+                  <p className="text-red-500 text-sm mt-1">{errors.appVersion}</p>
+                )}
               </div>
 
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
+                  Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                  className={`text-black w-full px-4 py-2 border ${errors.category ? "border-red-500" : "border-gray-300"} rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150`}
                 >
                   <option value="">Select category</option>
                   <option>Education</option>
-<option>Finance</option>
-<option>Health</option>
-<option>Agriculture</option>
-<option>Trade</option>
-<option>Technology</option>
-<option>Social Affairs</option>
-<option>Justice</option>
-<option>Logistics</option>
-
+                  <option>Finance</option>
+                  <option>Health</option>
+                  <option>Agriculture</option>
+                  <option>Trade</option>
+                  <option>Technology</option>
+                  <option>Social Affairs</option>
+                  <option>Justice</option>
+                  <option>Logistics</option>
                 </select>
+                {errors.category && (
+                  <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+                )}
               </div>
 
               <div className="mt-4 pt-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Supported Platforms
+                  Supported Platforms <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-4">
                   <label className="flex items-center text-sm font-medium text-gray-700">
@@ -755,18 +890,24 @@ export default function AppSubmissionOverview() {
                     iOS
                   </label>
                 </div>
+                {errors.platforms && (
+                  <p className="text-red-500 text-sm mt-1">{errors.platforms}</p>
+                )}
                 {isIOSChecked && (
                   <div className="mt-4 pl-0 pt-3">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      iOS URL(Optional)
+                      iOS URL <span className="text-red-500">*</span>
                     </label>
                     <input
                       onChange={(e) => setIosurl(e.target.value)}
                       type="text"
                       value={ioSurl}
                       placeholder="Enter iOS URL"
-                      className=" text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                      className={`text-black w-full px-4 py-2 border ${errors.iosUrl ? "border-red-500" : "border-gray-300"} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150`}
                     />
+                    {errors.iosUrl && (
+                      <p className="text-red-500 text-sm mt-1">{errors.iosUrl}</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -781,7 +922,9 @@ export default function AppSubmissionOverview() {
             <form className="space-y-4 pl-10 pr-10">
               {/* App Icon Section */}
               <div>
-                <label className="block text-gray-600 mb-1">App Icon</label>
+                <label className="block text-gray-600 mb-1">
+                  App Icon <span className="text-red-500">*</span>
+                </label>
                 <div className="flex flex-wrap gap-10 pb-7">
                   <div className="w-full sm:w-1/3 relative">
                     {appIcon ? (
@@ -814,7 +957,7 @@ export default function AppSubmissionOverview() {
                       // Upload area when no app icon is selected
                       <label
                         htmlFor="app-icon-input"
-                        className="cursor-pointer flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 p-6 text-center hover:bg-gray-100"
+                        className={`cursor-pointer flex flex-col items-center justify-center h-full border-2 border-dashed ${errors.appIcon ? "border-red-500" : "border-gray-300"} p-6 text-center hover:bg-gray-100`}
                         style={{ height: "150px", width: "700px" }}
                       >
                         <input
@@ -843,74 +986,87 @@ export default function AppSubmissionOverview() {
                         {appIconError}
                       </p>
                     )}
+                    {errors.appIcon && (
+                      <p className="text-red-500 text-sm mt-2">{errors.appIcon}</p>
+                    )}
                   </div>
                 </div>
               </div>
 
               {/* APK File Section */}
-              <label className="block text-gray-600 mb-1">APK File</label>
-              <div
-                onClick={handleDivClick}
-                className="border-2 border-dashed border-gray-300 p-6 text-center cursor-pointer hover:bg-gray-100"
-                style={{ height: "150px" }}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".apk" // Allow only APK files
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <div className="flex items-center justify-center mb-2 space-x-2">
-                  <img
-                    src="/upload_icon.svg"
-                    alt="Upload Icon"
-                    className="w-5 h-5 mr-2 text-center"
-                  />
-                </div>
-                <span className="text-sm font-bold text-gray-700">
-                  Choose a file or drag and drop it here
-                </span>
-                <p className="text-xs text-[#989090]">
-                  Supports APK file format, with a maximum file size of 500MB
-                </p>
-              </div>
+              {isAndroidChecked && (
+                <>
+                  <label className="block text-gray-600 mb-1">
+                    APK File <span className="text-red-500">*</span>
+                  </label>
+                  <div
+                    onClick={handleDivClick}
+                    className={`border-2 border-dashed ${errors.apkFile ? "border-red-500" : "border-gray-300"} p-6 text-center cursor-pointer hover:bg-gray-100`}
+                    style={{ height: "150px" }}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".apk" // Allow only APK files
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                    <div className="flex items-center justify-center mb-2 space-x-2">
+                      <img
+                        src="/upload_icon.svg"
+                        alt="Upload Icon"
+                        className="w-5 h-5 mr-2 text-center"
+                      />
+                    </div>
+                    <span className="text-sm font-bold text-gray-700">
+                      Choose a file or drag and drop it here
+                    </span>
+                    <p className="text-xs text-[#989090]">
+                      Supports APK file format, with a maximum file size of 500MB
+                    </p>
+                  </div>
 
-              {apkFile && (
-                <div className="mt-4">
-                  <p className="text-sm font-medium text-gray-700">
-                    APK:{" "}
-                    <a
-                      href={apkUrl || "#"}
-                      download={apkFile?.name}
-                      className="text-blue-600 underline cursor-pointer"
-                    >
-                      {apkFile.name}
-                    </a>
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Size: {(apkFile.size / (1024 * 1024)).toFixed(2)} MB
-                  </p>
-                </div>
-              )}
+                  {apkFile && (
+                    <div className="mt-4">
+                      <p className="text-sm font-medium text-gray-700">
+                        APK:{" "}
+                        <a
+                          href={apkUrl || "#"}
+                          download={apkFile?.name}
+                          className="text-blue-600 underline cursor-pointer"
+                        >
+                          {apkFile.name}
+                        </a>
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Size: {(apkFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                    </div>
+                  )}
 
-              {apkFile && uploadPercentage > 0 && (
-                <div className="mt-4">
-                  <p className="text-sm font-medium text-gray-700">
-                    {uploadPercentage < 100 ? `Uploading... ${uploadPercentage}%` : 'Upload successful'}
-                  </p>
-                  <progress
-                    value={uploadPercentage}
-                    max="100"
-                    className="w-full"
-                  ></progress>
-                </div>
+                  {apkFile && uploadPercentage > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm font-medium text-gray-700">
+                        {uploadPercentage < 100 ? `Uploading... ${uploadPercentage}%` : 'Upload successful'}
+                      </p>
+                      <progress
+                        value={uploadPercentage}
+                        max="100"
+                        className="w-full"
+                      ></progress>
+                    </div>
+                  )}
+                  
+                  {errors.apkFile && (
+                    <p className="text-red-500 text-sm mt-2">{errors.apkFile}</p>
+                  )}
+                </>
               )}
 
               {/* Cover Graphics Section */}
               <div>
                 <label className="block text-gray-600 mb-1">
-                  Cover Graphics
+                  Cover Graphics <span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-wrap gap-10 pb-7">
                   <div className="w-full sm:w-1/3 relative">
@@ -944,7 +1100,7 @@ export default function AppSubmissionOverview() {
                       // Upload area when no cover graphics is selected
                       <label
                         htmlFor="cover-graphics-input"
-                        className="cursor-pointer flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 p-6 text-center hover:bg-gray-100"
+                        className={`cursor-pointer flex flex-col items-center justify-center h-full border-2 border-dashed ${errors.coverGraphics ? "border-red-500" : "border-gray-300"} p-6 text-center hover:bg-gray-100`}
                         style={{ height: "150px", width: "700px" }}
                       >
                         <input
@@ -973,6 +1129,9 @@ export default function AppSubmissionOverview() {
                         {appGraphicsError}
                       </p>
                     )}
+                    {errors.coverGraphics && (
+                      <p className="text-red-500 text-sm mt-2">{errors.coverGraphics}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -982,7 +1141,7 @@ export default function AppSubmissionOverview() {
         {activeStep === 3 && (
           <div>
             <label className="text-xl font-bold text-customblue">
-              Screenshots
+              Screenshots <span className="text-red-500">*</span>
             </label>
             <div className="flex flex-wrap gap-10 pl-10 pr-10">
               {[...Array(4)].map((_, index) => (
@@ -1021,7 +1180,7 @@ export default function AppSubmissionOverview() {
                   ) : (
                     <label
                       htmlFor={`screenshot-input-${index}`}
-                      className="cursor-pointer flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 p-6 text-center hover:bg-gray-100"
+                      className={`cursor-pointer flex flex-col items-center justify-center h-full border-2 border-dashed ${errors.screenshots && index === 0 ? "border-red-500" : "border-gray-300"} p-6 text-center hover:bg-gray-100`}
                       style={{ height: "300px", width: "300px" }}
                     >
                       <input
@@ -1042,7 +1201,7 @@ export default function AppSubmissionOverview() {
                         className="w-5 h-5 mb-2"
                       />
                       <span className="text-sm font-bold text-gray-700">
-                        Add Screenshot {index + 1}
+                        Add Screenshot {index + 1} {index === 0 && <span className="text-red-500">*</span>}
                       </span>
                       <p className="text-xs text-[#989090]">
                         Supports PNG, JPG formats, with a maximum file size of
@@ -1054,6 +1213,9 @@ export default function AppSubmissionOverview() {
               ))}
               {screenshotErorr && (
                 <p className="text-red-500 text-sm mt-2">{screenshotErorr}</p>
+              )}
+              {errors.screenshots && (
+                <p className="text-red-500 text-sm mt-2 ml-10">{errors.screenshots}</p>
               )}
             </div>
           </div>
@@ -1067,47 +1229,56 @@ export default function AppSubmissionOverview() {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
+                  Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   // rows="4"
                   placeholder="Enter app description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="text-black  w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                  className={`text-black w-full px-4 py-3 border ${errors.description ? "border-red-500" : "border-gray-300"} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150`}
                 ></textarea>
+                {errors.description && (
+                  <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+                )}
               </div>
 
               {/* Tags */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tags
+                  Tags <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   type="text"
                   placeholder="Enter tags"
-                  className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                  className={`text-black w-full px-4 py-2 border ${errors.tags ? "border-red-500" : "border-gray-300"} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150`}
                 />
+                {errors.tags && (
+                  <p className="text-red-500 text-sm mt-1">{errors.tags}</p>
+                )}
               </div>
 
               {/* Privacy Policy URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Privacy Policy URL
+                  Privacy Policy URL <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={privacyPolicyUrl}
                   onChange={(e) => setPrivacyPolicyUrl(e.target.value)}
                   type="url"
                   placeholder="Enter privacy policy"
-                  className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                  className={`text-black w-full px-4 py-2 border ${errors.privacyPolicyUrl ? "border-red-500" : "border-gray-300"} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150`}
                 />
+                {errors.privacyPolicyUrl && (
+                  <p className="text-red-500 text-sm mt-1">{errors.privacyPolicyUrl}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Web Portal URL(Optional)
+                  Web Portal URL (Optional)
                 </label>
                 <input
                   value={webPortalUrl}
@@ -1224,7 +1395,7 @@ export default function AppSubmissionOverview() {
           </h1>
           <button
             onClick={logoutclick}
-            className="px-4 py-2 text-sm text-black  rounded-md "
+            className="px-4 py-2 text-sm text-black rounded-md ml-4"
           >
             Log Out
           </button>
