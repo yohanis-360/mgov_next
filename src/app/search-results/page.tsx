@@ -4,6 +4,10 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { handleLogout } from "@/utils/auth";
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSelector from '@/components/LanguageSelector';
+import Footer from '@/components/Footer';
 
 export interface AppData {
   id: number;
@@ -28,6 +32,7 @@ function SearchResultsContent() {
   const query = searchParams.get("q");
   const [searchQuery, setSearchQuery] = useState(query || "");
   const [selectedPlatform, setSelectedPlatform] = useState<string>("android");
+  const { t, getBackendValue } = useLanguage();
 
   useEffect(() => {
     const user = typeof window !== "undefined" ? localStorage.getItem("user") : null;
@@ -97,7 +102,7 @@ function SearchResultsContent() {
   };
 
   const logoutclick = () => {
-    router.push("/user/login");
+    handleLogout(router);
   };
 
   if (loading) {
@@ -111,42 +116,42 @@ function SearchResultsContent() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="flex justify-between items-center px-6 py-4 bg-gray-100">
+      <header className="flex justify-between items-center px-4 md:px-6 py-4 bg-gray-100">
         <div className="flex items-center space-x-4">
-        <Link href="/landing_page_user">
-      <Image src="/logo_efdri.png" alt="Logo" width={40} height={40} />
-    </Link>
-            </div>
+          <Link href="/landing_page_user">
+            <Image src="/logo_efdri.png" alt="Logo" width={40} height={40} />
+          </Link>
+        </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
           <form onSubmit={handleSearch} className="flex items-center">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Search apps"
-              style={{ width: "500px" }}
-              className="ml-3 p-2 border border-gray-300 rounded-md text-sm text-black"
+              placeholder={t('search_placeholder')}
+              className="ml-0 md:ml-3 p-2 border border-gray-300 rounded-md text-sm text-black w-full md:w-[300px] lg:w-[500px]"
             />
           </form>
+          <LanguageSelector />
           <button
             onClick={username ? logoutclick : () => router.push("/user/login")}
-            className="text-sm px-4 py-2 bg-blue-600 text-white rounded-[50px]"
+            className="text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 bg-blue-600 text-white rounded-[50px]"
           >
-            {username || "Login"}
+            {username || t('login')}
           </button>
         </div>
       </header>
 
-      <div className="mx-10">
-        <section className="px-6 py-8">
-          <h1 className="text-2xl font-bold mb-6 text-black">
-            Search Results for "{query}"
+      <div className="mx-4 md:mx-10">
+        <section className="px-3 md:px-6 py-4 md:py-8">
+          <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-black">
+            {t('search_results_for')} "{query}"
           </h1>
           
           {/* Platform Filter Buttons */}
-          <section className="flex px-6 py-4 space-x-4 mb-8">
+          <section className="flex px-3 md:px-6 py-2 md:py-4 space-x-2 md:space-x-4 mb-4 md:mb-8">
             {/* Android Button */}
             <button
               style={{
@@ -156,16 +161,17 @@ function SearchResultsContent() {
                 selectedPlatform === "android"
                   ? "bg-customblue text-white"
                   : "bg-white text-customblue border border-customblue"
-              } px-8 py-1 rounded-[20px] hover:bg-customblue transition duration-300 flex items-center space-x-2`}
+              } px-4 md:px-8 py-1 rounded-[20px] hover:bg-customblue transition duration-300 flex items-center space-x-2 text-xs md:text-sm`}
               onClick={() => setSelectedPlatform("android")}
             >
               <Image
                 src="/platform_icon.png"
-                alt="Android Icon"
-                width={20}
-                height={20}
+                alt={t('android_icon')}
+                width={16}
+                height={16}
+                className="w-4 h-4 md:w-5 md:h-5"
               />
-              <span>Android</span>
+              <span>{t('android')}</span>
             </button>
 
             {/* iOS Button */}
@@ -177,26 +183,27 @@ function SearchResultsContent() {
                 selectedPlatform === "IOS"
                   ? "bg-customblue text-white"
                   : "bg-white text-customblue border border-customblue"
-              } px-8 py-1 rounded-[20px] hover:bg-customblue transition duration-300 flex items-center space-x-2`}
+              } px-4 md:px-8 py-1 rounded-[20px] hover:bg-customblue transition duration-300 flex items-center space-x-2 text-xs md:text-sm`}
               onClick={() => setSelectedPlatform("IOS")}
             >
               <Image
                 src="/platform_icon.png"
-                alt="iOS Icon"
-                width={20}
-                height={20}
+                alt={t('ios_icon')}
+                width={16}
+                height={16}
+                className="w-4 h-4 md:w-5 md:h-5"
               />
-              <span>iOS</span>
+              <span>{t('ios')}</span>
             </button>
           </section>
 
           {filteredApps.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               {filteredApps.map((app) => (
                 <div
                   onClick={() => handleAppClick(app.id)}
                   key={app.id}
-                  className="max-w-md bg-white rounded-lg shadow-md overflow-hidden border border-gray-100"
+                  className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100"
                 >
                   {/* Image section */}
                   <div
@@ -215,13 +222,13 @@ function SearchResultsContent() {
                   </div>
 
                   {/* Content section */}
-                  <div className="p-4">
+                  <div className="p-3 md:p-4">
                     {/* App Icon and Title */}
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12">
+                    <div className="flex items-center space-x-3 md:space-x-4">
+                      <div className="w-10 h-10 md:w-12 md:h-12">
                         <Image
                           src={`http://127.0.0.1:8000${app.app_icon}`}
-                          alt={`${app.app_name} Icon`}
+                          alt={`${app.app_name} ${t('icon')}`}
                           width={48}
                           height={48}
                           className="rounded-md"
@@ -230,11 +237,11 @@ function SearchResultsContent() {
                       <div>
                         <h2
                           className="font-semibold text-gray-800"
-                          style={{ fontSize: "15px" }}
+                          style={{ fontSize: "14px" }}
                         >
                           {app.app_name}
                         </h2>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs md:text-sm text-gray-500">
                           {app.category} · {app.tags}
                         </p>
                       </div>
@@ -244,85 +251,14 @@ function SearchResultsContent() {
               ))}
             </div>
           ) : (
-            <div className="flex justify-center items-center h-64 text-lg text-gray-500">
-              No results found for "{query}"
+            <div className="flex justify-center items-center h-64 text-base md:text-lg text-gray-500 px-4 text-center">
+              {t('no_results_found')} "{query}"
             </div>
           )}
         </section>
       </div>
 
-      <footer className="bg-gray-100 py-5 px-10">
-        <div className="flex flex-wrap justify-between items-center mb-6">
-          {/* Logo Section */}
-          <div className="flex flex-col items-start">
-            <p style={{ fontSize: "12px", color: "black" }}>
-              Copyright © {new Date().getFullYear()} App Store. All rights
-              reserved.
-            </p>
-            <div className="flex justify-center space-x-4 mt-2 text-black">
-              <a style={{ fontSize: "12px" }} href="#" className="hover:text-blue-600">
-                Facebook
-              </a>
-              <a style={{ fontSize: "12px" }} href="#" className="hover:text-blue-600">
-                Twitter
-              </a>
-              <a style={{ fontSize: "12px" }} href="#" className="hover:text-blue-600">
-                LinkedIn
-              </a>
-            </div>
-          </div>
-
-          {/* Links Section */}
-          <div className="grid grid-cols-3 gap-8 text-sm text-black">
-            {/* Column 1 */}
-            <div>
-              <h4 className="font-bold mb-2">Developers</h4>
-              <ul>
-                <li>
-                  <a href="/login" className="hover:underline">
-                    Developer Console
-                  </a>
-                </li>
-                <li>
-                  <a href="/login" className="hover:underline">
-                    Submit APK
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3 */}
-            <div className="ml-20">
-              <h4 className="font-bold mb-2">Company</h4>
-              <ul>
-                <li>
-                  <a href="/landing_page_user/about_us" className="hover:underline">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="/landing_page_user/contact_us" className="hover:underline">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a href="/landing_page_user/faq" className="hover:underline">
-                    FAQ
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="border-t border-gray-700 pt-4 text-black">
-          <p style={{ fontSize: "12px" }}>
-            Copyright © {new Date().getFullYear()} Gov App Ethiopia All rights
-            reserved. | Privacy Policy | Copyright Policy | Terms |
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

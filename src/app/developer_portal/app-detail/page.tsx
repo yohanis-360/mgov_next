@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import React from "react";
 // import React, { useEffect, useRef, useState } from "react";
+import { useRequireAuth } from "@/utils/auth";
 
 const steps = [
   { label: "App Information", step: 1 },
@@ -18,6 +19,9 @@ type UploadedFile = {
   size: number;
 };
 export default function AppDetails() {
+  // Add authentication check (redirects to login if not authenticated)
+  useRequireAuth("/login", "developer");
+
   const [apkFile, setApkFile] = useState<File | null>(null);
   const [uploadPercentage, setUploadPercentage] = useState(0);
   const [apkUrl, setApkUrl] = useState<string | null>(null);
@@ -266,15 +270,15 @@ const [isPublished, setIsPublished] = useState(false);
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto pl-6">
+      <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Progress Steps */}
-        <div className="relative flex justify-between items-center mb-8">
+        <div className="relative flex justify-between items-center my-4 md:mb-8 overflow-x-auto py-2 md:py-0">
           {steps.map(({ step, label }, index) => (
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
                 {/* Step Circle */}
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
+                  className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold ${
                     activeStep >= step ? "bg-customblue" : "bg-gray-300"
                   }`}
                 >
@@ -282,7 +286,7 @@ const [isPublished, setIsPublished] = useState(false);
                 </div>
                 {/* Step Label */}
                 <span
-                  className={`mt-2 text-sm ${
+                  className={`mt-1 md:mt-2 text-xs md:text-sm ${
                     activeStep >= step ? "text-customblue" : "text-gray-400"
                   }`}
                 >
@@ -293,7 +297,7 @@ const [isPublished, setIsPublished] = useState(false);
               {/* Horizontal Line */}
               {index < steps.length - 1 && (
                 <div
-                  className={`h-1 flex-grow mx-2 mb-5 ${
+                  className={`h-1 flex-grow mx-1 md:mx-2 mb-4 md:mb-5 ${
                     activeStep > step ? "bg-customblue" : "bg-gray-300"
                   }`}
                 ></div>
@@ -303,15 +307,15 @@ const [isPublished, setIsPublished] = useState(false);
         </div>
 
         {/* Step Content */}
-        <div className="border rounded-lg p-6 shadow-lg bg-white">
+        <div className="border rounded-lg p-4 md:p-6 shadow-lg bg-white">
           {activeStep === 1 && (
             <div>
-              <h2 className="text-xl font-bold mb-4 text-customblue">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-customblue">
                 App Information
               </h2>
-              <form className="space-y-5 pl-10 pr-10">
+              <form className="space-y-4 md:space-y-5 px-2 md:px-10">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     App Name
                   </label>
                   <input
@@ -320,11 +324,11 @@ const [isPublished, setIsPublished] = useState(false);
                     value={appName}
                     onChange={(e) => setAppName(e.target.value)}
                     placeholder="Enter app name"
-                    className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    className="text-black w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     App Version
                   </label>
                   <input
@@ -333,20 +337,18 @@ const [isPublished, setIsPublished] = useState(false);
                     value={appVersion}
                     onChange={(e) => setAppVersion(e.target.value)}
                     placeholder="Enter app version"
-                    className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    className="text-black w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                   />
                 </div>
 
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="mt-2 md:mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     Category
                   </label>
                   <select
-                  
                     value={category}
-                    
                     onChange={(e) => setCategory(e.target.value)}
-                    className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    className="text-black w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                   >
                     <option value="">Select category</option>
                     <option>Education</option>
@@ -355,8 +357,8 @@ const [isPublished, setIsPublished] = useState(false);
                   </select>
                 </div>
                
-                <div className="mt-4 pt-3">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="mt-2 md:mt-4 pt-2 md:pt-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     Supported Platforms
                   </label>
                   <div className="flex gap-4">
@@ -364,7 +366,6 @@ const [isPublished, setIsPublished] = useState(false);
                       <input
                         onChange={(e) => setAndroidChecked(e.target.checked)}
                         type="checkbox"
-                        // checked={androidChecked}
                         className="mr-2 w-4 h-4 text-purple-500 border-gray-300 rounded focus:ring-2 focus:ring-purple-500"
                       />
                       Android
@@ -380,8 +381,8 @@ const [isPublished, setIsPublished] = useState(false);
                       iOS
                     </label>
                   </div>
-                  <div className="mt-4 pl-0 pt-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="mt-2 md:mt-4 pt-2 md:pt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                       iOS URL(Optional)
                     </label>
                     <input
@@ -390,7 +391,7 @@ const [isPublished, setIsPublished] = useState(false);
                       readOnly
                       value={ioSurl}
                       placeholder="Enter iOS URL"
-                      className=" text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                      className="text-black w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                     />
                   </div>
                 </div>
@@ -399,25 +400,25 @@ const [isPublished, setIsPublished] = useState(false);
           )}
           {activeStep === 2 && (
             <div>
-              <h2 className="text-xl font-bold text-customblue mb-4">
+              <h2 className="text-lg md:text-xl font-bold text-customblue mb-3 md:mb-4">
                 Upload Files
               </h2>
-              <form className="space-y-4 pl-10 pr-10">
+              <form className="space-y-3 md:space-y-4 px-2 md:px-10">
                 {/* App Icon Section */}
                 <div>
-                  <label className="block text-gray-600 mb-1">App Icon</label>
-                  <div className="flex flex-wrap gap-10 pb-7">
-                    <div className="w-full sm:w-1/3 relative">
+                  <label className="block text-sm text-gray-600 mb-1">App Icon</label>
+                  <div className="flex flex-wrap gap-4 md:gap-10 pb-4 md:pb-7">
+                    <div className="w-full sm:w-1/2 md:w-1/3 relative">
                       {appDetails.app_icon ? (
                         <div className="w-full h-full">
                           <img
-                            src={appDetails.app_icon || "/eodb.jpg"} // Display fetched app icon
+                            src={appDetails.app_icon || "/eodb.jpg"}
                             alt="App Icon"
-                            className="w-full h-full object-cover rounded-lg mr-5"
+                            className="w-full h-full object-cover rounded-lg"
                           />
                         </div>
                       ) : (
-                        <p className="text-gray-500">No app icon uploaded</p>
+                        <p className="text-gray-500 text-sm">No app icon uploaded</p>
                       )}
                     </div>
                   </div>
@@ -425,39 +426,39 @@ const [isPublished, setIsPublished] = useState(false);
 
                 {/* APK File Section */}
                 <div>
-                  <label className="block text-gray-600 mb-1">APK File</label>
+                  <label className="block text-sm text-gray-600 mb-1">APK File</label>
                   {appDetails.apk_file ? (
                     <div className="flex items-center">
                       <a
                         href={appDetails.apk_file}
                         download
-                        className="text-blue-600 underline cursor-pointer"
+                        className="text-blue-600 underline cursor-pointer text-sm md:text-base"
                       >
                         {appDetails.app_name}
                       </a>
                     </div>
                   ) : (
-                    <p className="text-gray-500">No APK file uploaded</p>
+                    <p className="text-gray-500 text-sm">No APK file uploaded</p>
                   )}
                 </div>
 
                 {/* Cover Graphics Section */}
                 <div>
-                  <label className="block text-gray-600 mb-1">
+                  <label className="block text-sm text-gray-600 mb-1">
                     Cover Graphics
                   </label>
-                  <div className="flex flex-wrap gap-10 pb-7">
-                    <div className="w-full sm:w-1/3 relative">
+                  <div className="flex flex-wrap gap-4 md:gap-10 pb-4 md:pb-7">
+                    <div className="w-full sm:w-1/2 md:w-1/3 relative">
                       {appDetails.cover_graphics ? (
                         <div className="w-full h-full">
                           <img
                             src={appDetails.cover_graphics}
                             alt="Cover Graphics"
-                            className="w-full h-full object-cover rounded-lg mr-5"
+                            className="w-full h-full object-cover rounded-lg"
                           />
                         </div>
                       ) : (
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 text-sm">
                           No cover graphics uploaded
                         </p>
                       )}
@@ -469,76 +470,76 @@ const [isPublished, setIsPublished] = useState(false);
           )}
           {activeStep === 3 && (
             <div>
-              <label className="text-xl font-bold text-customblue">
+              <label className="text-lg md:text-xl font-bold text-customblue block mb-3 md:mb-4">
                 Screenshots
               </label>
-              <div className="flex flex-wrap gap-10 pl-10 pr-10">
-                {appDetails.screenshots?.map(
-                  (screenshot: {
-                    id: Key | null | undefined;
-                    screenshot: string | undefined;
-                  }) => (
-                    <img
-                      key={screenshot.id}
-                      src={screenshot.screenshot}
-                      alt={`App Screenshot ${screenshot.id}`}
-                      className="rounded-lg shadow-md"
-                      style={{ height: "300px" }}
-                    />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 px-2 md:px-10">
+                {appDetails.screenshots && appDetails.screenshots.length > 0 ? (
+                  appDetails.screenshots.map(
+                    (screenshot: {
+                      id: Key | null | undefined;
+                      screenshot: string | undefined;
+                    }) => (
+                      <img
+                        key={screenshot.id}
+                        src={screenshot.screenshot}
+                        alt={`App Screenshot ${screenshot.id}`}
+                        className="rounded-lg shadow-md w-full h-auto max-h-[200px] md:max-h-[300px] object-contain mx-auto"
+                      />
+                    )
                   )
+                ) : (
+                  <p className="text-gray-500 text-sm col-span-full text-center py-4">No screenshots available</p>
                 )}
               </div>
             </div>
           )}
           {activeStep === 4 && (
             <div className="mt-2">
-             <div className="flex items-center justify-between mb-4">
-  <h2 className="text-2xl font-semibold text-customblue">
-    App Description
-  </h2>
-  {(status === "Approved" || status === "Unpublished") && (
-  <div className="flex items-center gap-4">
-      <div
-        onClick={handleToggle}
-        className={`w-12 h-6 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition ${
-          isPublished? "bg-green-500" : "bg-red-500"
-        }`}
-      >
-        <div
-          className={`w-5 h-5 bg-white rounded-full shadow-md transform transition ${
-            isPublished ? "translate-x-6" : ""
-          }`}
-        ></div>
-      </div>
-      <span className={`text-sm font-medium ${isPublished ? "text-green-600" : "text-red-600"}`}>
-      {isPublished ? "Published" : "Unpublished"}
-      </span>
-    </div>
-  )}
-</div>
+             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3 md:mb-4 px-2 md:px-10">
+              <h2 className="text-xl md:text-2xl font-semibold text-customblue mb-2 md:mb-0">
+                App Description
+              </h2>
+              {(status === "Approved" || status === "Unpublished") && (
+              <div className="flex items-center gap-2 md:gap-4">
+                <div
+                  onClick={handleToggle}
+                  className={`w-10 md:w-12 h-5 md:h-6 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition ${
+                    isPublished? "bg-green-500" : "bg-red-500"
+                  }`}
+                >
+                  <div
+                    className={`w-4 md:w-5 h-4 md:h-5 bg-white rounded-full shadow-md transform transition ${
+                      isPublished ? "translate-x-5 md:translate-x-6" : ""
+                    }`}
+                  ></div>
+                </div>
+                <span className={`text-xs md:text-sm font-medium ${isPublished ? "text-green-600" : "text-red-600"}`}>
+                {isPublished ? "Published" : "Unpublished"}
+                </span>
+              </div>
+              )}
+            </div>
       
 
-              <form className="space-y-4 pl-10  pr-10">
+              <form className="space-y-3 md:space-y-4 px-2 md:px-10">
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     Description
                   </label>
                   <textarea
-                    // rows="4"
                     placeholder="Enter app description"
                     readOnly
                     value={appDetails.description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="text-black  w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    className="text-black w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                   ></textarea>
                 </div>
 
                 {/* Tags */}
-
-               
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     Tags
                   </label>
                   <input
@@ -547,13 +548,13 @@ const [isPublished, setIsPublished] = useState(false);
                     onChange={(e) => setTags(e.target.value)}
                     type="text"
                     placeholder="Enter tags"
-                    className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    className="text-black w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                   />
                 </div>
 
                 {/* Privacy Policy URL */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     Privacy Policy URL
                   </label>
                   <input
@@ -562,11 +563,11 @@ const [isPublished, setIsPublished] = useState(false);
                     onChange={(e) => setPrivacyPolicyUrl(e.target.value)}
                     type="url"
                     placeholder="Enter privacy policy"
-                    className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    className="text-black w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                     Web Portal URL(Optional)
                   </label>
                   <input
@@ -575,7 +576,7 @@ const [isPublished, setIsPublished] = useState(false);
                     type="url"
                     readOnly
                     placeholder="Enter web portal URL"
-                    className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150"
+                    className="text-black w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customblue focus:border-customblue transition ease-in-out duration-150 text-sm md:text-base"
                   />
                 </div>
               </form>
@@ -584,34 +585,33 @@ const [isPublished, setIsPublished] = useState(false);
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-between mt-4 md:mt-6 px-2">
           <button
             onClick={prevStep}
             disabled={activeStep === 1}
-            className=" text-white px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 disabled:opacity-50"
+            className="text-white px-3 md:px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 disabled:opacity-50 text-sm md:text-base"
           >
             Previous
           </button>
           {activeStep < totalSteps ? (
             <button
               onClick={nextStep}
-              className="  px-4 py-2 bg-customblue text-white rounded-lg hover:bg-customblue disabled:opacity-50"
+              className="px-3 md:px-4 py-2 bg-customblue text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm md:text-base"
             >
               Next
             </button>
           ) : (
             <button
-              onClick={() => handleUpdate()} // Wrap the async function in an arrow function
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              onClick={() => handleUpdate()}
+              className="px-3 md:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm md:text-base"
             >
               {isLoading ? (
                 <div className="flex justify-center items-center">
-                  <div className="spinner-border animate-spin w-6 h-6 border-4 border-t-transparent border-blue-500 rounded-full"></div>
+                  <div className="spinner-border animate-spin w-4 h-4 md:w-6 md:h-6 border-4 border-t-transparent border-blue-500 rounded-full"></div>
                 </div>
               ) : (
                 "Update"
               )}
-              {/* Submit */}
             </button>
           )}
         </div>
